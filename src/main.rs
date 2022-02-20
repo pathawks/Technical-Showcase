@@ -3,7 +3,7 @@ use structopt::StructOpt;
 
 #[derive(StructOpt)]
 struct Cli {
-    album: Option<u64>,
+    album: Option<u64>, // TODO: This will fail if value is not an integer
 }
 
 impl fmt::Display for Cli {
