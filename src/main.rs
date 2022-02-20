@@ -15,7 +15,12 @@ impl fmt::Display for Cli {
     }
 }
 
+fn create_url(album: Option<u64>) -> String {
+    const BASE: &str = "https://jsonplaceholder.typicode.com/photos";
+    return format!("{}", BASE);
+}
+
 fn main() {
     let args = Cli::from_args();
-    println!("{}", args);
+    println!("{}", create_url(args.album));
 }
