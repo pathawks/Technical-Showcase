@@ -17,7 +17,26 @@ impl fmt::Display for Cli {
 
 fn create_url(album: Option<u64>) -> String {
     const BASE: &str = "https://jsonplaceholder.typicode.com/photos";
-    return format!("{}", BASE);
+    return match album {
+        Some(album_id) => format!("{}?album={}", BASE, album_id),
+        None => format!("{}", BASE),
+    };
+}
+
+#[test]
+fn it_generates_correct_base_url() {
+    assert_eq!(
+        "https://jsonplaceholder.typicode.com/photos",
+        create_url(None)
+    );
+}
+
+#[test]
+fn it_generates_correct_album_url() {
+    assert_eq!(
+        "https://jsonplaceholder.typicode.com/photos?album=123",
+        create_url(Some(123))
+    );
 }
 
 fn main() {
