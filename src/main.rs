@@ -6,6 +6,14 @@ struct Cli {
     album: Option<u64>, // TODO: This will fail if value is not an integer
 }
 
+struct PhotoData {
+    album_id: u64,
+    id: u64,
+    title: String,
+    url: String,
+    thumbnail_url: String,
+}
+
 impl fmt::Display for Cli {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self.album {
@@ -21,6 +29,12 @@ fn create_url(album: Option<u64>) -> String {
         Some(album_id) => format!("{}?album={}", BASE, album_id),
         None => format!("{}", BASE),
     };
+}
+
+fn fetch_photos(album: Option<u64>) -> Vec<PhotoData> {
+    // Ideally, we would inject `create_url` to unit test `fetch_photos` independently
+    let url: String = create_url(album);
+    return Vec::new();
 }
 
 #[test]
