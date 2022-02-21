@@ -1,16 +1,16 @@
 package com.example.demo;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Builder;
+import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Jacksonized
+@Builder
+@Value
 public class PhotoData {
-    private int albumId;
-    private int id;
-    private String title;
-    private String url;
-    private String thumbnailUrl;
+    int albumId;
+    int id;
+    String title;
+    String url;
+    String thumbnailUrl;
 }

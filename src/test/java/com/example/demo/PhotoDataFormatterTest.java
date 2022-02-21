@@ -11,9 +11,8 @@ class PhotoDataFormatterTest {
     void givenValidPhotoData_FormatsPhotoData() {
         int expectedId = 2;
         String expectedTitle = "title";
-        PhotoData photoData = new PhotoData();
-        photoData.setId(expectedId);
-        photoData.setTitle(expectedTitle);
+        PhotoData photoData =
+                PhotoData.builder().id(expectedId).title(expectedTitle).build();
 
         String actual = photoDataFormatter.apply(photoData);
 

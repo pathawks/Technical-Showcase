@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
@@ -7,12 +8,14 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
 import java.util.List;
 
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -21,6 +24,16 @@ class PhotoServiceTest {
     MockWebServer mockBackEnd;
     PhotoService underTest;
 
+    PhotoData samplePhotoData = PhotoData.builder()
+            .id(2)
+            .albumId(1)
+            .title("title")
+            .thumbnailUrl("thumbnailUrl")
+            .url("url")
+            .build();
+
+    ObjectMapper objectMapper = Jackson2ObjectMapperBuilder.json().build();
+
     @BeforeEach
     void initialize() throws IOException {
         mockBackEnd = new MockWebServer();
@@ -28,19 +41,10 @@ class PhotoServiceTest {
         String baseUrl = String.format("http://localhost:%s", mockBackEnd.getPort());
         underTest = new PhotoService(WebClient.create(baseUrl));
 
-
-        mockBackEnd.enqueue(new MockResponse().setBody("[\n" +
-                "  {\n" +
-                "    \"albumId\": 2,\n" +
-                "    \"id\": 55,\n" +
-                "    \"title\": \"voluptatem consequatur totam qui aut " +
-                "iure est vel\",\n" +
-                "    \"url\": \"https://via.placeholder.com/600/5e04a4\"," +
-                "\n" +
-                "    \"thumbnailUrl\": \"https://via.placeholder" +
-                ".com/150/5e04a4\"\n" +
-                "  }\n" +
-                "]").addHeader("Content-Type", "application/json"));
+        String json =
+                objectMapper.writeValueAsString(singletonList(samplePhotoData));
+        mockBackEnd.enqueue(new MockResponse().setBody(json)
+                .addHeader("Content-Type", "application/json"));
     }
 
     @AfterEach
@@ -55,7 +59,6 @@ class PhotoServiceTest {
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();
         assertThat(recordedRequest.getMethod()).isEqualTo("GET");
         assertThat(recordedRequest.getPath()).isEqualTo("/photos");
-        assertThat(recordedRequest.getRequestUrl().query()).isNull();
     }
 
     @Test
@@ -72,30 +75,19 @@ class PhotoServiceTest {
 
     @Test
     public void getAllPhotos_returnsCollection() {
-        PhotoData expectedPhotoData = new PhotoData(2, 55,
-                "voluptatem consequatur totam qui aut iure est vel",
-                "https://via.placeholder.com/600/5e04a4",
-                "https://via.placeholder.com/150/5e04a4"
-        );
-
         List<PhotoData> photos = underTest.getAllPhotos();
 
         assertThat(photos).isNotEmpty();
-        assertThat(photos).containsExactly(expectedPhotoData);
+        assertThat(photos).containsExactly(samplePhotoData);
     }
 
     @Test
     public void getPhotosInAlbum_returnsCollection() {
         int albumId = 2;
-        PhotoData expectedPhotoData = new PhotoData(albumId, 55,
-                "voluptatem consequatur totam qui aut iure est vel",
-                "https://via.placeholder.com/600/5e04a4",
-                "https://via.placeholder.com/150/5e04a4"
-        );
 
         List<PhotoData> photos = underTest.getPhotosInAlbum(albumId);
 
         assertThat(photos).isNotEmpty();
-        assertThat(photos).containsExactly(expectedPhotoData);
+        assertThat(photos).containsExactly(samplePhotoData);
     }
 }
