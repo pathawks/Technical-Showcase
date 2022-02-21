@@ -5,18 +5,20 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class PhotoDataFormatterTest {
-    private final PhotoDataFormatter photoDataFormatter = new PhotoDataFormatter();
+    PhotoDataFormatter photoDataFormatter = new PhotoDataFormatter();
 
     @Test
     void givenValidPhotoData_FormatsPhotoData() {
-        int id = 2;
-        String title = "title";
-        PhotoData photoData = new PhotoData(4, id, title, "url", "thumbnailUrl");
+        int expectedId = 2;
+        String expectedTitle = "title";
+        PhotoData photoData = new PhotoData();
+        photoData.setId(expectedId);
+        photoData.setTitle(expectedTitle);
 
         String actual = photoDataFormatter.apply(photoData);
 
-        assertThat(actual).contains(title);
-        assertThat(actual).contains("[" + id + "]");
-        assertThat(actual).isEqualTo("[" + id + "] " + title);
+        assertThat(actual).contains(expectedTitle);
+        assertThat(actual).contains("[" + expectedId + "]");
+        assertThat(actual).isEqualTo("[" + expectedId + "] " + expectedTitle);
     }
 }

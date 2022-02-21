@@ -18,8 +18,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @ActiveProfiles("test")
 class PhotoServiceTest {
-    public static MockWebServer mockBackEnd;
-    private PhotoService underTest;
+    MockWebServer mockBackEnd;
+    PhotoService underTest;
 
     @BeforeEach
     void initialize() throws IOException {
@@ -49,7 +49,7 @@ class PhotoServiceTest {
     }
 
     @Test
-    public void should_call_api_with_no_album() throws InterruptedException {
+    public void getAllPhotos_makesRequest() throws InterruptedException {
         underTest.getAllPhotos();
 
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();
@@ -59,7 +59,7 @@ class PhotoServiceTest {
     }
 
     @Test
-    public void should_call_api_with_album() throws InterruptedException {
+    public void getPhotosInAlbum_makesRequest() throws InterruptedException {
         int expectedAlbumId = 1;
 
         underTest.getPhotosInAlbum(expectedAlbumId);
@@ -71,7 +71,7 @@ class PhotoServiceTest {
     }
 
     @Test
-    public void should_return_collection_of_photo_datas() {
+    public void getAllPhotos_returnsCollection() {
         PhotoData expectedPhotoData = new PhotoData(2, 55,
                 "voluptatem consequatur totam qui aut iure est vel",
                 "https://via.placeholder.com/600/5e04a4",
@@ -85,7 +85,7 @@ class PhotoServiceTest {
     }
 
     @Test
-    public void should_return_collection_of_photo_datas_in_album() {
+    public void getPhotosInAlbum_returnsCollection() {
         int albumId = 2;
         PhotoData expectedPhotoData = new PhotoData(albumId, 55,
                 "voluptatem consequatur totam qui aut iure est vel",
