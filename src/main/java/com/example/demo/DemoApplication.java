@@ -3,6 +3,7 @@ package com.example.demo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
@@ -28,9 +29,9 @@ public class DemoApplication implements ApplicationRunner {
     }
 
     @Bean
-    private static WebClient webClient() {
+    private static WebClient webClient(@Value("${server.uri}") String serverUri) {
         return WebClient.builder()
-                .baseUrl("https://jsonplaceholder.typicode.com/")
+                .baseUrl(serverUri)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE,
                         MediaType.APPLICATION_JSON_VALUE
                 )

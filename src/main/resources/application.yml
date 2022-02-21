@@ -1,0 +1,11 @@
+spring:
+  main:
+    web-application-type: none
+    banner-mode: off
+
+log:
+  level:
+    root: warn
+
+server:
+  uri: https://jsonplaceholder.typicode.com/
