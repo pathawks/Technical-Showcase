@@ -14,6 +14,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.List;
+
 @SpringBootApplication
 @AllArgsConstructor
 @Profile("!test")
@@ -42,22 +44,20 @@ public class DemoApplication implements ApplicationRunner {
         String[] sourceArgs = args.getSourceArgs();
 
         if (sourceArgs.length == 0) {
-            photoService.getAllPhotos()
-                    .stream()
-                    .map(photoDataFormatter)
-                    .forEach(System.out::println);
+            displayPhotoList(photoService.getAllPhotos());
         } else {
             for (String album : sourceArgs) {
                 try {
                     int albumId = Integer.parseInt(album);
-                    photoService.getPhotosInAlbum(albumId)
-                            .stream()
-                            .map(photoDataFormatter)
-                            .forEach(System.out::println);
+                    displayPhotoList(photoService.getPhotosInAlbum(albumId));
                 } catch (NumberFormatException e) {
                     LOG.warn("Cannot fetch photos for album: {}", album);
                 }
             }
         }
+    }
+
+    private void displayPhotoList(List<PhotoData> photos) {
+        photos.stream().map(photoDataFormatter).forEach(System.out::println);
     }
 }
